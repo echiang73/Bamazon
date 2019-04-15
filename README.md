@@ -9,7 +9,7 @@ This application implements a CLI based Storefront for the retail company "Bamaz
 
 1. Clone down repository.
 2. Navigate to the root of your project and run `npm install` to install the required versions of third party npm packages as instructed in the `package.json` file.
-3. Note that this app will only work if you provide the MySQL login and password in the `keys.js`.
+3. Note that this app will only work if you provide the MySQL connection user name and password in the `keys.js`.
 4. Run command `node` with one of the commands below.
    * `bamazonCustomer.js`
    * `bamazonManager.js`
@@ -17,11 +17,11 @@ This application implements a CLI based Storefront for the retail company "Bamaz
 
 
 ## Detail Instructions:
-1. Option 1 for Customer Interface: `node bamazonCustomer.js`
+1. Option 1 for Customer Interface: `node bamazonCustomer.js` :credit_card: :package: :shipit:
 
    The **Customer** interface allows the user/customer to view the current inventory, specifically : product name, description, price, and stock quantity. The customer is then able to purchase an item and the desired quantity. If the selected quantity is currently in stock, the customer's order is fulfilled, displaying the total purchase price and updating the store database. If the desired quantity is not available, the customer is prompted to modify the order.
 
-2. Option 2 for Manager Interface: `node bamazonManager.js`
+2. Option 2 for Manager Interface: `node bamazonManager.js` :spiral_notepad: :writing_hand:
      
    The **Manager** interface allows the user/manager to view list of products for sale or with low inventory as well as to add to inventory or add new products. The manager will be presented with a set of menu options:
 
@@ -30,7 +30,7 @@ This application implements a CLI based Storefront for the retail company "Bamaz
     * Add to Inventory - Prompt manager to add more of any item currently in store.
     * Add New Product - Prompt manager to add a completely new product to the store.
 
-3. Option 3 for Supervisor Interface: `node bamazonSupervisor.js`
+3. Option 3 for Supervisor Interface: `node bamazonSupervisor.js` :chart_with_upwards_trend: :dollar:
      
    The **Supervisor** interface allows the user/supervisor to view list of product sales by Department as well as to create new Department for the store. The supervisor will be presented with a set of menu options:
 
