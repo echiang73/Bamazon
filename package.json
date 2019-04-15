@@ -1,0 +1,31 @@
+{
+  "name": "bamazon",
+  "version": "1.0.0",
+  "description": "Bamazon storefront CLI app",
+  "main": "bamazonCustomer.js, bamazonManager.js, bamazonSupervisor.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/echiang73/Bamazon.git"
+  },
+  "keywords": [
+    "bamazon",
+    "node",
+    "mysql",
+    "cli"
+  ],
+  "author": "Eddie Chiang",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/echiang73/Bamazon/issues"
+  },
+  "homepage": "https://github.com/echiang73/Bamazon#readme",
+  "dependencies": {
+    "figlet": "^1.2.1",
+    "inquirer": "^6.3.1",
+    "mysql": "^2.16.0",
+    "table": "^5.2.3"
+  }
+}

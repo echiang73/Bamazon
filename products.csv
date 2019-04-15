@@ -1,0 +1,16 @@
+﻿item_id,product_name,product_description,department_name,sales_price,stock_quantity
+1,Vanicream,"Dye free, fragrance free skin care lotion for face, hand, body, 8oz",Cosmetics,15,50
+2,Dove Beauty Bar Soup,"Sensitive skin, unscented beauty bar with 1/4 moisturizing cream, 4oz, pack of 16",Cosmetics,15,4
+3,Purell Hand Sanitizer,"Skin-friendly formulation sanitizer kills most germs, 8oz",Cosmetics,3,30
+4,SmartyPants Vitamin,"Women's complete gummy multivitamin, gluten free, 120 count",Food,16,30
+5,BarkTHINS Chocolate,"Dark chocolate (almond with sea salt), 4.7oz, pack of 6",Food,24,10
+6,Mauna Loa Dry Roasted Macadamia Nuts,"Dry roasted with sea salt macadamia nuts, 25oz bag",Food,36,10
+7,Dymatize ISO 100 Whey Protein Isolate,"Award-winning why protein isolate, chocolate peanut butter flavor, 5 pound",Food,75,4
+8,Goodnight Moon,Boardbook by Margaret Wise Brown,Books,7,10
+9,The Very Hungry Caterpillar,Boardbook by Eric Carle,Books,7,4
+10,"Good Night, Gorilla",Boardbook by Peggy Rathmann,Books,7,25
+11,"Brown Bear, Brown Bear, What Do You See?",Boardbook by Bill Martin Jr. and Eric Carle,Books,8,10
+12,Playskool Heroes Rescue Bots Heatwave,"Transformer toy, play in bot mode or firetruck vehicle mode",Toys,8,5
+13,Playskool Heroes Rescue Bots Chase,"Transformer toy, play in bot mode or police vehicle mode",Toys,8,3
+14,Playskool Heroes Rescue Bots Boulder,"Transformer toy, play in bot mode or construction vehicle mode",Toys,8,8
+15,Playskool Heroes Rescue Bots Blades,"Transformer toy, play in bot mode or helicopter mode",Toys,8,20
