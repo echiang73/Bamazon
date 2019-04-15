@@ -21,6 +21,8 @@ This application implements a CLI based Storefront for the retail company "Bamaz
 
    The **Customer** interface allows the user/customer to view the current inventory, specifically : product name, description, price, and stock quantity. The customer is then able to purchase an item and the desired quantity. If the selected quantity is currently in stock, the customer's order is fulfilled, displaying the total purchase price and updating the store database. If the desired quantity is not available, the customer is prompted to modify the order.
 
+   Just for fun, purchase all of the following pregnancy prediction products: "lotion, vitamin, scent-free soap, and hand-sanitizer" and receive a promotional discount for diapers and upcoming pregnancy/baby products! :tada: :baby: :baby_bottle:
+
 2. Option 2 for Manager Interface: `node bamazonManager.js` :spiral_notepad: :writing_hand:
      
    The **Manager** interface allows the user/manager to view list of products for sale or with low inventory as well as to add to inventory or add new products. The manager will be presented with a set of menu options:
