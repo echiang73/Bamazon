@@ -1,15 +1,21 @@
+const dotenv = require("dotenv").config();
 var mysql = require("mysql");
 var inquirer = require("inquirer");
 var figlet = require("figlet");
 var Table = require("cli-table");
 var colors = require("colors");
+var keys = require("./keys.js");
+var fs = require("fs");
 
+// var MySql;
+
+// var mysqlPassword = new MySql(keys.mysqlPassword);
 
 var connection = mysql.createConnection({
     host: "localhost",
     port: 3306,
     user: "root",
-    password: "",
+    password: keys.mysqlPassword,
     database: "bamazon_DB"
 });
 
