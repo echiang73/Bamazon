@@ -39,40 +39,42 @@ function identifyRole() {
         type: "rawlist",
         message: "Please identify your role.",
         choices: 
-        ["Customer", "Manager", "Supervisor"]
+        ["Customer", "Manager", "Supervisor", "EXIT"]
     }).then(function (answer) {
         switch (answer.userRole){
             case "Customer":
             console.log("Hello Customer!");
-            customerRole();
+            askViewInventory();
             break;
 
             case "Manager":
             console.log("Hello Manager!");
-            // managerRole();
+            managerGreeting();
             break;
 
             case "Supervisor":
             console.log("Hello Supervisor!");
             // supervisorRole();
             break;
+
+            case "EXIT":
+            console.log("Thank you for visiting, come back again!");
+            connection.end();
+            break;
         }
     });
 }
 
-function customerRole(){
-    viewForSaleInventory();
-}
-
 // ---------Start of Customer Codes-------
-function viewForSaleInventory() {
+function askViewInventory() {
     inquirer.prompt({
         name: "confirm",
         type: "confirm",
         message: "Would you like to view the current inventory?"
     }).then(function (answer) {
         if (answer.confirm) {
-            displayForSaleInventory();
+            displayInventory();
+            setTimeout(askToPurchase, 1000 * 0.1);
         }
         else {
             console.log("Thank you for visiting, come back again!");
@@ -81,7 +83,7 @@ function viewForSaleInventory() {
     });
 }
 
-function displayForSaleInventory() {
+function displayInventory() {
     connection.query("SELECT * FROM products", function (err, res) {
         if (err) throw err;
         // console.log(res);
@@ -95,7 +97,7 @@ function displayForSaleInventory() {
             );
         };
         console.log(table.toString());
-        askToPurchase();
+        // askToPurchase();
     });
 
 }
@@ -153,8 +155,8 @@ function placeOrder() {
                 // console.log(orderTotal);
                 
                 var table2 = new Table({
-                    head: ["Product Purchased", "Description", "Quantity Ordered", "$/Unit", "Total $ Cost"],
-                    colWidths: [30, 75, 18, 12, 12]
+                    head: ["Product Purchased", "Description", "Quantity Ordered", "$/Unit", "$ Total Cost"],
+                    colWidths: [30, 75, 18, 12, 14]
                 });
                 table2.push(
                     [res[0].product_name, res[0].product_description, desiredItem.quantityToBuy, res[0].sales_price, orderTotal]
@@ -172,7 +174,7 @@ function placeOrder() {
                     function(error, result) {
                         if(error) throw error;
                     });
-                viewInventory();
+                askViewInventory();
             }
             else{
                 console.log("Sorry, insufficient quantity in stock.  Please enter a lower quantity to purchase.".red);
@@ -182,4 +184,143 @@ function placeOrder() {
     });
 }
 
-// ---------End of Customer Codes-------
+// ---------End of Customer Codes--------
+// ---------Start of Manager Codes-------
+
+function managerGreeting(){
+    figlet("Bamazon Manager App", function (err, data) {
+        if (err) {
+            console.log('Something went wrong...');
+            console.dir(err);
+            return;
+        }
+        console.log(data);
+    });
+    setTimeout(managerOptions, 1000 * 0.1);
+};
+
+function managerOptions(){
+    inquirer.prompt({
+        name: "options",
+        type: "rawlist",
+        message: "Please select an option!",
+        choices: 
+        ["View Products for Sale", "View Low Inventory", "Add to Inventory", "Add New Product", "Exit to Main Menu"]
+    }).then(function (answer) {
+        switch (answer.options){
+            case "View Products for Sale":
+            console.log("\nView Products Currently for Sale".red);
+            displayInventory();
+            setTimeout(managerOptions, 1000 * 0.1);
+            break;
+
+            case "View Low Inventory":
+            console.log("\nTable of Low Inventory Products!".red);
+            displayLowInventory();
+            setTimeout(managerOptions, 1000 * 0.1);
+            break;
+
+            case "Add to Inventory":
+            console.log("\nTo ADD to Current Inventory!".red);
+            addToInventory();
+            // setTimeout(managerOptions, 1000 * 0.1);
+            break;
+
+            case "Add New Product":
+            console.log("\nTo ADD New Products!".red);
+            addNewProduct();
+            // setTimeout(managerOptions, 1000 * 0.1);
+            break;
+
+            case "Exit to Main Menu":
+            welcome();
+            break;
+        }
+    });
+}
+
+function displayLowInventory(){
+    connection.query("SELECT * FROM products WHERE stock_quantity <= 5", function (err, res) {
+        if (err) throw err;
+        // console.log(res);
+        var table = new Table({
+            head: ["Item ID", "Product Name", "Description", "Department", "$ Price", "Stock Qty"],
+            colWidths: [9, 30, 75, 12, 8, 10]
+        });
+        for(var i = 0; i < res.length; i++) {
+            table.push(
+                [res[i].item_id, res[i].product_name, res[i].product_description, res[i].department_name, res[i].sales_price, res[i].stock_quantity]
+            );
+        };
+        console.log(table.toString());
+    });
+}
+
+function addToInventory(){
+    inquirer.prompt([{
+        name: "addItem",
+        type: "input",
+        message: "Please enter the item number for the product that you would like to ADD!",
+        validate: function (value) {
+            if (isNaN(value) === false) {
+                return true;
+            }
+            return false
+        }
+    }, {
+        name: "quantityToAdd",
+        type: "input",
+        message: "How many would you like to ADD?",
+        validate: function (value) {
+            if (isNaN(value) === false) {
+                return true;
+            }
+            return false
+        }
+    }]).then(function (answer) {
+        var query = "SELECT * FROM products WHERE ?";
+        connection.query(query, {item_id: answer.addItem}, function (err, res) {
+            if (err) throw err;
+            var msg = "You are adding quantity of " + answer.quantityToAdd + " " + res[0].product_name + " to the inventory!";
+            console.log(msg.red);
+            var updateItem = answer.addItem;
+            var updateQuantity = (parseInt(res[0].stock_quantity) + parseInt(answer.quantityToAdd));
+        
+            var table3 = new Table({
+                head: ["Item ID", "Product Name", "Description", "$ Price", "Qty to Add", "Expected Total Stock"],
+                colWidths: [9, 30, 55, 12, 15, 25]
+            });
+            table3.push(
+                [res[0].item_id, res[0].product_name, res[0].product_description, res[0].sales_price, answer.quantityToAdd, (parseInt(res[0].stock_quantity) + parseInt(answer.quantityToAdd))]
+            );
+            console.log(table3.toString());
+
+            inquirer.prompt({
+                name: "confirm",
+                type: "confirm",
+                message: "Please confirm item and quantity to ADD!".red
+            }).then(function (answer) {
+                if (answer.confirm){
+                    connection.query("UPDATE products SET ? WHERE ?", 
+                        [{
+                            stock_quantity: updateQuantity
+                        },{
+                            item_id: updateItem
+                        }], 
+                        function(error, result) {
+                            if(error) throw error;
+                        });
+                    console.log("\nThe item has been succesfully added!".red);
+                    managerOptions();
+                }
+                else{
+                    console.log("Your item has NOT been added!".red);
+                    managerOptions();
+                }
+            });
+        });
+            
+    });
+}
+
+// Add New Product();
