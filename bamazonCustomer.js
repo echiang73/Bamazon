@@ -7,10 +7,6 @@ var colors = require("colors");
 var keys = require("./keys.js");
 var fs = require("fs");
 
-// var MySql;
-
-// var mysqlPassword = new MySql(keys.mysqlPassword);
-
 var connection = mysql.createConnection({
     host: "localhost",
     port: 3306,
