@@ -49,7 +49,7 @@ This application implements a CLI based Storefront for the retail company "Bamaz
 ## npm packages: 
 * [Inquirer.js](https://www.npmjs.com/package/inquirer) - A collection of common interactive command line user interfaces to provide inquiry session flow. :question: :speech_balloon:
 * [mysql](https://www.npmjs.com/package/mysql) - A node.js driver for mysql, written in JavaScript, to interface with MySQL databases.
-* [Table](https://www.npmjs.com/package/table) - Formats data into a string table. Table data is described using an array (rows) of array (cells).
+* [CLI-Table](https://www.npmjs.com/package/cli-table) - A utility to render unicode-aided tables on the command line from the node.js scripts.
 * [Figlet](https://www.npmjs.com/package/figlet) - Create ASCII text banners from plain text, using command-line utilities to fully implement the FIGfont spec in JavaScript. :pencil: :computer:
 * [Moment](https://www.npmjs.com/package/moment) - A lightweight JavaScript date library for parsing, validating, manipulating, and formatting dates. :calendar:
 * [DotEnv](https://www.npmjs.com/package/dotenv) - Dotenv store your sensitive credentials and load in environment variables in .env file to merge into your process.env runtime variables. :closed_lock_with_key:
