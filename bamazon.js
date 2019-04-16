@@ -7,10 +7,6 @@ var colors = require("colors");
 var keys = require("./keys.js");
 var fs = require("fs");
 
-// var MySql;
-
-// var mysqlPassword = new MySql(keys.mysqlPassword);
-
 var connection = mysql.createConnection({
     host: "localhost",
     port: 3306,
@@ -34,17 +30,49 @@ function welcome() {
         }
         console.log(data);
     });
-    setTimeout(viewInventory, 1000 * 0.1);
+    setTimeout(identifyRole, 1000 * 0.1);
 }
 
-function viewInventory() {
+function identifyRole() {
+    inquirer.prompt({
+        name: "userRole",
+        type: "rawlist",
+        message: "Please identify your role.",
+        choices: 
+        ["Customer", "Manager", "Supervisor"]
+    }).then(function (answer) {
+        switch (answer.userRole){
+            case "Customer":
+            console.log("Hello Customer!");
+            customerRole();
+            break;
+
+            case "Manager":
+            console.log("Hello Manager!");
+            // managerRole();
+            break;
+
+            case "Supervisor":
+            console.log("Hello Supervisor!");
+            // supervisorRole();
+            break;
+        }
+    });
+}
+
+function customerRole(){
+    viewForSaleInventory();
+}
+
+// ---------Start of Customer Codes-------
+function viewForSaleInventory() {
     inquirer.prompt({
         name: "confirm",
         type: "confirm",
         message: "Would you like to view the current inventory?"
     }).then(function (answer) {
         if (answer.confirm) {
-            displayInventory();
+            displayForSaleInventory();
         }
         else {
             console.log("Thank you for visiting, come back again!");
@@ -53,7 +81,7 @@ function viewInventory() {
     });
 }
 
-function displayInventory() {
+function displayForSaleInventory() {
     connection.query("SELECT * FROM products", function (err, res) {
         if (err) throw err;
         // console.log(res);
@@ -134,7 +162,7 @@ function placeOrder() {
                     function(error, result) {
                         if(error) throw error;
                     });
-                viewInventory();
+                viewForSaleInventory();
             }
             else{
                 console.log("Sorry, insufficient quantity in stock.  Please enter a lower quantity to purchase.".red);
@@ -143,3 +171,5 @@ function placeOrder() {
         })
     });
 }
+
+// ---------End of Customer Codes-------
