@@ -86,7 +86,7 @@ function displayForSaleInventory() {
         if (err) throw err;
         // console.log(res);
         var table = new Table({
-            head: ["Item ID", "Product Name", "Description", "Department", "Price", "Stock"],
+            head: ["Item ID", "Product Name", "Description", "Department", "$ Price", "Stock Qty"],
             colWidths: [9, 30, 75, 12, 8, 10]
         });
         for(var i = 0; i < res.length; i++) {
@@ -151,7 +151,17 @@ function placeOrder() {
                 var orderTotal = res[0].sales_price * desiredItem.quantityToBuy;
                 // console.log(updateQuantity);
                 // console.log(orderTotal);
-                var orderPlaced = "Your order for " + desiredItem.quantityToBuy + " " + res[0].product_name + " has been placed. \nYour total cost is $" + orderTotal + ". Thank you for your business!";
+                
+                var table2 = new Table({
+                    head: ["Product Purchased", "Description", "Quantity Ordered", "$/Unit", "Total $ Cost"],
+                    colWidths: [30, 75, 18, 12, 12]
+                });
+                table2.push(
+                    [res[0].product_name, res[0].product_description, desiredItem.quantityToBuy, res[0].sales_price, orderTotal]
+                );
+                console.log(table2.toString());
+        
+                var orderPlaced = "\nYour order for " + desiredItem.quantityToBuy + " " + res[0].product_name + " has been placed. \nYour total cost is $" + orderTotal + ". Thank you for your business!";
                 console.log(orderPlaced.green);
                 connection.query("UPDATE products SET ? WHERE ?", 
                     [{
@@ -162,7 +172,7 @@ function placeOrder() {
                     function(error, result) {
                         if(error) throw error;
                     });
-                viewForSaleInventory();
+                viewInventory();
             }
             else{
                 console.log("Sorry, insufficient quantity in stock.  Please enter a lower quantity to purchase.".red);
