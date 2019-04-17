@@ -398,3 +398,58 @@ function addNewProduct(){
     });
 }
 
+function deleteProduct(){
+    inquirer.prompt({
+        name: "deleteItem",
+        type: "input",
+        message: "Please enter the item number for the product that you would like to DELETE from inventory!",
+        validate: function (value) {
+            if (isNaN(value) === false) {
+                return true;
+            }
+            return false
+        }
+    }).then(function (answer) {
+        var query = "SELECT * FROM products WHERE ?";
+        connection.query(query, {item_id: answer.deleteItem}, function (err, res) {
+            if (err) throw err;
+            var msg = "You are requesting to delete " + res[0].product_name + " completely from the inventory!";
+            console.log(msg.red);
+        
+            var table5 = new Table({
+                head: ["Item ID", "Product Name", "Description", "Department", "$ Price", "Stock Qty"],
+                colWidths: [9, 30, 75, 12, 8, 10]
+            });
+            table5.push(
+                [res[0].item_id, res[0].product_name, res[0].product_description, res[0].department_name, res[0].sales_price, res[0].stock_quantity]
+            );
+            console.log(table5.toString());
+
+            inquirer.prompt({
+                name: "confirm",
+                type: "confirm",
+                message: "Please confirm the request to DELETE the product entirely from the inventory!".red
+            }).then(function (answer2) {
+                if (answer2.confirm){
+                    connection.query("DELETE FROM products WHERE ?", 
+                        {
+                            item_id: res[0].item_id,
+                        }, 
+                        function(error, result) {
+                            if(error) throw error;
+                        });
+                    console.log("\nThe product has been succesfully deleted!".red);
+                    managerOptions();
+                }
+                else{
+                    console.log("\nThe product has NOT been deleted!".red);
+                    managerOptions();
+                }
+            });
+        });
+            
+    });
+}
+
+// ---------End of Manager Codes--------
+// ---------Start of Supervisor Codes-------
