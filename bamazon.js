@@ -205,7 +205,7 @@ function managerOptions(){
         type: "rawlist",
         message: "Please select an option!",
         choices: 
-        ["View Products for Sale", "View Low Inventory", "Add to Inventory", "Add New Product", "Exit to Main Menu"]
+        ["View Products for Sale", "View Low Inventory", "Add to Inventory", "Add New Product", "Delete Product", "Exit to Main Menu"]
     }).then(function (answer) {
         switch (answer.options){
             case "View Products for Sale":
@@ -223,13 +223,16 @@ function managerOptions(){
             case "Add to Inventory":
             console.log("\nTo ADD to Current Inventory!".red);
             addToInventory();
-            // setTimeout(managerOptions, 1000 * 0.1);
             break;
 
             case "Add New Product":
             console.log("\nTo ADD New Products!".red);
             addNewProduct();
-            // setTimeout(managerOptions, 1000 * 0.1);
+            break;
+
+            case "Delete Product":
+            console.log("\nTo DELETE Products!".red);
+            deleteProduct();
             break;
 
             case "Exit to Main Menu":
@@ -260,7 +263,7 @@ function addToInventory(){
     inquirer.prompt([{
         name: "addItem",
         type: "input",
-        message: "Please enter the item number for the product that you would like to ADD!",
+        message: "Please enter the item number for the product that you would like to ADD to inventory!",
         validate: function (value) {
             if (isNaN(value) === false) {
                 return true;
@@ -270,7 +273,7 @@ function addToInventory(){
     }, {
         name: "quantityToAdd",
         type: "input",
-        message: "How many would you like to ADD?",
+        message: "What quantity would you like to ADD to inventory?",
         validate: function (value) {
             if (isNaN(value) === false) {
                 return true;
@@ -298,7 +301,7 @@ function addToInventory(){
             inquirer.prompt({
                 name: "confirm",
                 type: "confirm",
-                message: "Please confirm item and quantity to ADD!".red
+                message: "Please confirm item and quantity to ADD to inventory!".red
             }).then(function (answer) {
                 if (answer.confirm){
                     connection.query("UPDATE products SET ? WHERE ?", 
@@ -314,7 +317,7 @@ function addToInventory(){
                     managerOptions();
                 }
                 else{
-                    console.log("Your item has NOT been added!".red);
+                    console.log("\nThe item has NOT been added!".red);
                     managerOptions();
                 }
             });
@@ -323,4 +326,75 @@ function addToInventory(){
     });
 }
 
-// Add New Product();
+function addNewProduct(){
+    inquirer.prompt([{
+        name: "name",
+        type: "input",
+        message: "Please enter the NAME of the NEW product that you would like to add!",
+    }, {
+        name: "description",
+        type: "input",
+        message: "Please enter a DESCRIPTION of the new product!",
+    }, {
+        name: "department",
+        type: "rawlist",
+        message: "Please select the DEPARTMENT that the new product belows to!",
+        choices: ["Books", "Cosmetics", "Food", "Toys"]
+    }, {
+        name: "price",
+        type: "input",
+        message: "What is the retail PRICE for the new product?",
+        validate: function (value) {
+            if (isNaN(value) === false) {
+                return true;
+            }
+            return false
+        }
+    }, {
+        name: "quantityToAdd",
+        type: "input",
+        message: "What QUANTITY would you like to stock in the inventory for the new product?",
+        validate: function (value) {
+            if (isNaN(value) === false) {
+                return true;
+            }
+            return false
+        }
+    }]).then(function(answer) {
+        var table4 = new Table({
+            head: ["Item ID", "Product Name", "Description", "Department", "$ Price", "Qty to Add"],
+            colWidths: [9, 30, 75, 12, 8, 10]
+        });
+        table4.push(
+            ["TBD", answer.name, answer.description, answer.department, answer.price, answer.quantityToAdd]
+        );
+        console.log(table4.toString());
+
+        inquirer.prompt({
+            name: "confirm",
+            type: "confirm",
+            message: "Please confirm the information for the NEW product that you would like to add!".red
+        }).then(function (toAdd) {
+            if (toAdd.confirm){
+                connection.query("INSERT INTO products SET ?", 
+                    {
+                        product_name: answer.name,
+                        product_description: answer.description,
+                        department_name: answer.department,
+                        sales_price: answer.price,
+                        stock_quantity: answer.quantityToAdd
+                    }, 
+                    function(error, result) {
+                        if(error) throw error;
+                    });
+                console.log("\nThe NEW product has been succesfully added to the inventory!".red);
+                managerOptions();
+            }
+            else{
+                console.log("\nThe new product has NOT been added!".red);
+                managerOptions();
+            }
+        });
+    });
+}
+
