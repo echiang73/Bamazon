@@ -54,7 +54,7 @@ function identifyRole() {
 
             case "Supervisor":
             console.log("Hello Supervisor!");
-            // supervisorRole();
+            supervisorGreeting();
             break;
 
             case "EXIT":
@@ -453,3 +453,58 @@ function deleteProduct(){
 
 // ---------End of Manager Codes--------
 // ---------Start of Supervisor Codes-------
+
+function supervisorGreeting(){
+    figlet("Bamazon Supervisor App", function (err, data) {
+        if (err) {
+            console.log('Something went wrong...');
+            console.dir(err);
+            return;
+        }
+        console.log(data);
+    });
+    setTimeout(supervisorOptions, 1000 * 0.1);
+};
+
+// function supervisorOptions(){
+//     inquirer.prompt({
+//         name: "options",
+//         type: "rawlist",
+//         message: "Please select an option!",
+//         choices: 
+//         ["View Products for Sale", "View Low Inventory", "Add to Inventory", "Add New Product", "Delete Product", "Exit to Main Menu"]
+//     }).then(function (answer) {
+//         switch (answer.options){
+//             case "View Products for Sale":
+//             console.log("\nView Products Currently for Sale".red);
+//             displayInventory();
+//             setTimeout(supervisorOptions, 1000 * 0.1);
+//             break;
+
+//             case "View Low Inventory":
+//             console.log("\nTable of Low Inventory Products!".red);
+//             displayLowInventory();
+//             setTimeout(supervisorOptions, 1000 * 0.1);
+//             break;
+
+//             case "Add to Inventory":
+//             console.log("\nTo ADD to Current Inventory!".red);
+//             addToInventory();
+//             break;
+
+//             case "Add New Product":
+//             console.log("\nTo ADD New Products!".red);
+//             addNewProduct();
+//             break;
+
+//             case "Delete Product":
+//             console.log("\nTo DELETE Products!".red);
+//             deleteProduct();
+//             break;
+
+//             case "Exit to Main Menu":
+//             welcome();
+//             break;
+//         }
+//     });
+// }
