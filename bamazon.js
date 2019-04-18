@@ -235,8 +235,8 @@ function managerOptions(){
             deleteProduct();
             break;
 
-            case "Exit to Main Menu":
-            welcome();
+            case "Exiting to Main Menu, Goodbye Manager!":
+            identifyRole();
             break;
         }
     });
@@ -466,45 +466,55 @@ function supervisorGreeting(){
     setTimeout(supervisorOptions, 1000 * 0.1);
 };
 
-// function supervisorOptions(){
-//     inquirer.prompt({
-//         name: "options",
-//         type: "rawlist",
-//         message: "Please select an option!",
-//         choices: 
-//         ["View Products for Sale", "View Low Inventory", "Add to Inventory", "Add New Product", "Delete Product", "Exit to Main Menu"]
-//     }).then(function (answer) {
-//         switch (answer.options){
-//             case "View Products for Sale":
-//             console.log("\nView Products Currently for Sale".red);
-//             displayInventory();
-//             setTimeout(supervisorOptions, 1000 * 0.1);
-//             break;
+function supervisorOptions(){
+    inquirer.prompt({
+        name: "options",
+        type: "rawlist",
+        message: "Please select an option!",
+        choices: 
+        ["View Product Sales by Department", "Create New Department", "Delete Department", "Exit to Main Menu"]
+    }).then(function (answer) {
+        switch (answer.options){
+            case "View Product Sales by Department":
+            console.log("\nView Products Sales by Department".red);
+            displayDepartmentSales();
+            setTimeout(supervisorOptions, 1000 * 0.1);
+            break;
 
-//             case "View Low Inventory":
-//             console.log("\nTable of Low Inventory Products!".red);
-//             displayLowInventory();
-//             setTimeout(supervisorOptions, 1000 * 0.1);
-//             break;
+            case "Create New Department":
+            console.log("\nCreate NEW Department".red);
+            createDeparment();
+            setTimeout(supervisorOptions, 1000 * 0.1);
+            break;
 
-//             case "Add to Inventory":
-//             console.log("\nTo ADD to Current Inventory!".red);
-//             addToInventory();
-//             break;
+            case "Delete Department":
+            console.log("\nDELETE Department".red);
+            deleteDepartment();
+            setTimeout(supervisorOptions, 1000 * 0.1);
+            break;
 
-//             case "Add New Product":
-//             console.log("\nTo ADD New Products!".red);
-//             addNewProduct();
-//             break;
+            case "Exiting to Main Menu, Goodbye Supervisor!":
+            identifyRole();
+            break;
+        }
+    });
+}
 
-//             case "Delete Product":
-//             console.log("\nTo DELETE Products!".red);
-//             deleteProduct();
-//             break;
+function displayDepartmentSales() {
+    connection.query("SELECT * FROM products", function (err, res) {
+        if (err) throw err;
+        // console.log(res);
+        var table = new Table({
+            head: ["Item ID", "Product Name", "Description", "Department", "$ Price", "Stock Qty"],
+            colWidths: [9, 30, 75, 12, 8, 10]
+        });
+        for(var i = 0; i < res.length; i++) {
+            table.push(
+                [res[i].item_id, res[i].product_name, res[i].product_description, res[i].department_name, res[i].sales_price, res[i].stock_quantity]
+            );
+        };
+        console.log(table.toString());
+        // askToPurchase();
+    });
 
-//             case "Exit to Main Menu":
-//             welcome();
-//             break;
-//         }
-//     });
-// }
+}
