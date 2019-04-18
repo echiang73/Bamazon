@@ -9,21 +9,15 @@ CREATE TABLE products(
   product_description VARCHAR(100) NOT NULL,
   department_name VARCHAR(30) NOT NULL,
   sales_price DECIMAL(10,2) NOT NULL,
-  stock_quantity INT NOT NULL
+  stock_quantity INT NOT NULL,
+  product_sales DECIMAL(10,2)
 );
 
--- CREATE TABLE departments(
---   position INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
---   artists VARCHAR(100) NOT NULL,
---   album VARCHAR(100) NOT NULL,
---   album_year INT(4) NOT NULL,
---   raw_total DECIMAL(10,4) NOT NULL,
---   US_score DECIMAL(10,4) NOT NULL,
---   UK_score DECIMAL(10,4) NOT NULL,
---   Europe_score DECIMAL(10,4) NOT NULL,
---   raw_row DECIMAL(10,4) NOT NULL
--- );
-
+CREATE TABLE departments(
+  department_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  department_name VARCHAR(30) NOT NULL,
+  over_head_costs DECIMAL(15,4) NOT NULL
+);
 
 SELECT * FROM products;
--- SELECT * FROM departments;
+SELECT * FROM departments;

@@ -77,8 +77,8 @@ function askViewInventory() {
             setTimeout(askToPurchase, 1000 * 0.1);
         }
         else {
-            console.log("Thank you for visiting, come back again!");
-            connection.end();
+            console.log("Thank you for visiting, come back again! Sending you back to the main menu.");
+            identifyRole();
         }
     });
 }
@@ -112,8 +112,8 @@ function askToPurchase() {
             placeOrder();
         }
         else {
-            console.log("Thank you for visiting, come back again!");
-            connection.end();
+            console.log("OK, sending you back to the customer options menu then.");
+            askViewInventory();
         }
     });
 }
