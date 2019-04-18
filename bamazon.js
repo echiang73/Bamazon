@@ -509,19 +509,27 @@ function supervisorOptions(){
 }
 
 function displayDepartmentSales() {
-    connection.query("SELECT * FROM products INNER JOIN departments ON (products.department_name = departments.department_name) ORDER BY departments.department_id", function (err, res) {
+    // connection.query("SELECT * FROM products INNER JOIN departments ON (products.department_name = departments.department_name) ORDER BY departments.department_id", function (err, res) {
+    var query = "SELECT products.department_name, COUNT(product_sales) AS totalDeptProdSales FROM products INNER JOIN departments ON (products.department_name = departments.department_name) GROUP BY department_name";
+    // var query = "SELECT departments.department_id, products.department_name, departments.over_head_costs, COUNT(product_sales) AS totalDeptProdSales FROM products INNER JOIN departments ON (products.department_name = departments.department_name) GROUP BY department_name";
+    connection.query(query, function (err, res) {
         if (err) throw err;
-        // console.log(res);
-        var table6 = new Table({
-            head: ["Department ID", "Department Name", "$ Over Head Costs", "$ Product Sales", "$ Total Profit"],
-            colWidths: [25, 40, 20, 20, 20]
-        });
+        console.log(res);
+        // var table6 = new Table({
+        //     head: ["Department ID", "Department Name", "$ Over Head Costs", "$ Product Sales", "$ Total Profit"],
+        //     // head: ["Department ID", "Department Name", "$ Over Head Costs", "$ Product Sales"],
+        //     colWidths: [25, 40, 20, 20, 20]
+        // });
         // for(var i = 0; i < res.length; i++) {
+        // if(res[i].product_sales === null){
+        //     res[i].product_sales = 0;
+        // }
         // var totalDeptProfit = (parseInt(res[i].over_head_costs) + parseInt(res[i].product_sales));
         //     table6.push(
         //         [res[i].department_id, res[i].department_name, res[i].over_head_costs, res[i].product_sales, totalDeptProfit]
+        //         // [res[i].department_id, res[i].department_name, res[i].over_head_costs, res[i].product_sales]
         //     );
         // };
-        console.log(table6.toString());
+        // console.log(table6.toString());
     });
 }
