@@ -235,7 +235,8 @@ function managerOptions(){
             deleteProduct();
             break;
 
-            case "Exiting to Main Menu, Goodbye Manager!":
+            case "Exit to Main Menu":
+            console.log("\nExiting to Main Menu, Goodbye Manager!".red);
             identifyRole();
             break;
         }
@@ -472,13 +473,19 @@ function supervisorOptions(){
         type: "rawlist",
         message: "Please select an option!",
         choices: 
-        ["View Product Sales by Department", "Create New Department", "Delete Department", "Exit to Main Menu"]
+        ["View Product Sales by Department", "View Product Inventory by Department", "Create New Department", "Delete Department", "Exit to Main Menu"]
     }).then(function (answer) {
         switch (answer.options){
             case "View Product Sales by Department":
             console.log("\nView Products Sales by Department".red);
             displayDepartmentSales();
             setTimeout(supervisorOptions, 1000 * 0.1);
+            break;
+
+            case "View Product Inventory by Department":
+            console.log("\nView Product Inventory by Department".red);
+            displayInventory();
+            setTimeout(managerOptions, 1000 * 0.1);
             break;
 
             case "Create New Department":
@@ -493,7 +500,8 @@ function supervisorOptions(){
             setTimeout(supervisorOptions, 1000 * 0.1);
             break;
 
-            case "Exiting to Main Menu, Goodbye Supervisor!":
+            case "Exit to Main Menu":
+            console.log("\nExiting to Main Menu, Goodbye Supervisor!".red);
             identifyRole();
             break;
         }
@@ -501,20 +509,19 @@ function supervisorOptions(){
 }
 
 function displayDepartmentSales() {
-    connection.query("SELECT * FROM products", function (err, res) {
+    connection.query("SELECT * FROM products INNER JOIN departments ON (products.department_name = departments.department_name) ORDER BY departments.department_id", function (err, res) {
         if (err) throw err;
         // console.log(res);
-        var table = new Table({
-            head: ["Item ID", "Product Name", "Description", "Department", "$ Price", "Stock Qty"],
-            colWidths: [9, 30, 75, 12, 8, 10]
+        var table6 = new Table({
+            head: ["Department ID", "Department Name", "$ Over Head Costs", "$ Product Sales", "$ Total Profit"],
+            colWidths: [25, 40, 20, 20, 20]
         });
-        for(var i = 0; i < res.length; i++) {
-            table.push(
-                [res[i].item_id, res[i].product_name, res[i].product_description, res[i].department_name, res[i].sales_price, res[i].stock_quantity]
-            );
-        };
-        console.log(table.toString());
-        // askToPurchase();
+        // for(var i = 0; i < res.length; i++) {
+        // var totalDeptProfit = (parseInt(res[i].over_head_costs) + parseInt(res[i].product_sales));
+        //     table6.push(
+        //         [res[i].department_id, res[i].department_name, res[i].over_head_costs, res[i].product_sales, totalDeptProfit]
+        //     );
+        // };
+        console.log(table6.toString());
     });
-
 }
