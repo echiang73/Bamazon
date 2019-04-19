@@ -38,29 +38,29 @@ function identifyRole() {
         name: "userRole",
         type: "rawlist",
         message: "Please identify your role.",
-        choices: 
-        ["Customer", "Manager", "Supervisor", "EXIT"]
+        choices:
+            ["Customer", "Manager", "Supervisor", "EXIT"]
     }).then(function (answer) {
-        switch (answer.userRole){
+        switch (answer.userRole) {
             case "Customer":
-            console.log("Hello Customer!");
-            askViewInventory();
-            break;
+                console.log("Hello Customer!");
+                askViewInventory();
+                break;
 
             case "Manager":
-            console.log("Hello Manager!");
-            managerGreeting();
-            break;
+                console.log("Hello Manager!");
+                managerGreeting();
+                break;
 
             case "Supervisor":
-            console.log("Hello Supervisor!");
-            supervisorGreeting();
-            break;
+                console.log("Hello Supervisor!");
+                supervisorGreeting();
+                break;
 
             case "EXIT":
-            console.log("Thank you for visiting, come back again!");
-            connection.end();
-            break;
+                console.log("Thank you for visiting, come back again!");
+                connection.end();
+                break;
         }
     });
 }
@@ -91,7 +91,7 @@ function displayInventory() {
             head: ["Item ID", "Product Name", "Description", "Department", "$ Price", "Stock Qty"],
             colWidths: [9, 30, 75, 12, 8, 10]
         });
-        for(var i = 0; i < res.length; i++) {
+        for (var i = 0; i < res.length; i++) {
             table.push(
                 [res[i].item_id, res[i].product_name, res[i].product_description, res[i].department_name, res[i].sales_price, res[i].stock_quantity]
             );
@@ -142,18 +142,18 @@ function placeOrder() {
     }]).then(function (desiredItem) {
         // var query = "SELECT product_name, department_name, sales_price, stock_quantity FROM products WHERE ?";
         var query = "SELECT * FROM products WHERE ?";
-        connection.query(query, {item_id: desiredItem.itemToBuy}, function (err, res) {
+        connection.query(query, { item_id: desiredItem.itemToBuy }, function (err, res) {
             if (err) throw err;
             // console.log(res);
             // console.log(desiredItem.quantityToBuy);
             // console.log(res[0].stock_quantity);
-            if (desiredItem.quantityToBuy <= res[0].stock_quantity){
+            if (desiredItem.quantityToBuy <= res[0].stock_quantity) {
                 console.log("We have enough in stock!".rainbow);
                 var updateQuantity = res[0].stock_quantity - desiredItem.quantityToBuy;
                 var orderTotal = res[0].sales_price * desiredItem.quantityToBuy;
                 // console.log(updateQuantity);
                 // console.log(orderTotal);
-                
+
                 var table2 = new Table({
                     head: ["Product Purchased", "Description", "Quantity Ordered", "$/Unit", "$ Total Cost"],
                     colWidths: [30, 75, 18, 12, 14]
@@ -162,21 +162,21 @@ function placeOrder() {
                     [res[0].product_name, res[0].product_description, desiredItem.quantityToBuy, res[0].sales_price, orderTotal]
                 );
                 console.log(table2.toString());
-        
+
                 var orderPlaced = "\nYour order for " + desiredItem.quantityToBuy + " " + res[0].product_name + " has been placed. \nYour total cost is $" + orderTotal + ". Thank you for your business!";
                 console.log(orderPlaced.green);
-                connection.query("UPDATE products SET ? WHERE ?", 
+                connection.query("UPDATE products SET ? WHERE ?",
                     [{
                         stock_quantity: updateQuantity
-                    },{
+                    }, {
                         item_id: desiredItem.itemToBuy
-                    }], 
-                    function(error, result) {
-                        if(error) throw error;
+                    }],
+                    function (error, result) {
+                        if (error) throw error;
                     });
                 askViewInventory();
             }
-            else{
+            else {
                 console.log("Sorry, insufficient quantity in stock.  Please enter a lower quantity to purchase.".red);
                 placeOrder();
             }
@@ -187,7 +187,7 @@ function placeOrder() {
 // ---------End of Customer Codes--------
 // ---------Start of Manager Codes-------
 
-function managerGreeting(){
+function managerGreeting() {
     figlet("Bamazon Manager App", function (err, data) {
         if (err) {
             console.log('Something went wrong...');
@@ -199,51 +199,51 @@ function managerGreeting(){
     setTimeout(managerOptions, 1000 * 0.1);
 };
 
-function managerOptions(){
+function managerOptions() {
     inquirer.prompt({
         name: "options",
         type: "rawlist",
         message: "Please select an option!",
-        choices: 
-        ["View Products for Sale", "View Low Inventory", "Add to Inventory", "Add New Product", "Delete Product", "Exit to Main Menu"]
+        choices:
+            ["View Products for Sale", "View Low Inventory", "Add to Inventory", "Add New Product", "Delete Product", "Exit to Main Menu"]
     }).then(function (answer) {
-        switch (answer.options){
+        switch (answer.options) {
             case "View Products for Sale":
-            console.log("\nView Products Currently for Sale".red);
-            displayInventory();
-            setTimeout(managerOptions, 1000 * 0.1);
-            break;
+                console.log("\nView Products Currently for Sale".red);
+                displayInventory();
+                setTimeout(managerOptions, 1000 * 0.1);
+                break;
 
             case "View Low Inventory":
-            console.log("\nTable of Low Inventory Products!".red);
-            displayLowInventory();
-            setTimeout(managerOptions, 1000 * 0.1);
-            break;
+                console.log("\nTable of Low Inventory Products!".red);
+                displayLowInventory();
+                setTimeout(managerOptions, 1000 * 0.1);
+                break;
 
             case "Add to Inventory":
-            console.log("\nTo ADD to Current Inventory!".red);
-            addToInventory();
-            break;
+                console.log("\nTo ADD to Current Inventory!".red);
+                addToInventory();
+                break;
 
             case "Add New Product":
-            console.log("\nTo ADD New Products!".red);
-            addNewProduct();
-            break;
+                console.log("\nTo ADD New Products!".red);
+                addNewProduct();
+                break;
 
             case "Delete Product":
-            console.log("\nTo DELETE Products!".red);
-            deleteProduct();
-            break;
+                console.log("\nTo DELETE Products!".red);
+                deleteProduct();
+                break;
 
             case "Exit to Main Menu":
-            console.log("\nExiting to Main Menu, Goodbye Manager!".red);
-            identifyRole();
-            break;
+                console.log("\nExiting to Main Menu, Goodbye Manager!".red);
+                identifyRole();
+                break;
         }
     });
 }
 
-function displayLowInventory(){
+function displayLowInventory() {
     connection.query("SELECT * FROM products WHERE stock_quantity <= 5", function (err, res) {
         if (err) throw err;
         // console.log(res);
@@ -251,7 +251,7 @@ function displayLowInventory(){
             head: ["Item ID", "Product Name", "Description", "Department", "$ Price", "Stock Qty"],
             colWidths: [9, 30, 75, 12, 8, 10]
         });
-        for(var i = 0; i < res.length; i++) {
+        for (var i = 0; i < res.length; i++) {
             table.push(
                 [res[i].item_id, res[i].product_name, res[i].product_description, res[i].department_name, res[i].sales_price, res[i].stock_quantity]
             );
@@ -260,7 +260,7 @@ function displayLowInventory(){
     });
 }
 
-function addToInventory(){
+function addToInventory() {
     inquirer.prompt([{
         name: "addItem",
         type: "input",
@@ -283,13 +283,13 @@ function addToInventory(){
         }
     }]).then(function (answer) {
         var query = "SELECT * FROM products WHERE ?";
-        connection.query(query, {item_id: answer.addItem}, function (err, res) {
+        connection.query(query, { item_id: answer.addItem }, function (err, res) {
             if (err) throw err;
             var msg = "You are adding quantity of " + answer.quantityToAdd + " " + res[0].product_name + " to the inventory!";
             console.log(msg.red);
             var updateItem = answer.addItem;
             var updateQuantity = (parseInt(res[0].stock_quantity) + parseInt(answer.quantityToAdd));
-        
+
             var table3 = new Table({
                 head: ["Item ID", "Product Name", "Description", "$ Price", "Qty to Add", "Expected Total Stock"],
                 colWidths: [9, 30, 55, 12, 15, 25]
@@ -304,30 +304,30 @@ function addToInventory(){
                 type: "confirm",
                 message: "Please confirm item and quantity to ADD to inventory!".red
             }).then(function (answer) {
-                if (answer.confirm){
-                    connection.query("UPDATE products SET ? WHERE ?", 
+                if (answer.confirm) {
+                    connection.query("UPDATE products SET ? WHERE ?",
                         [{
                             stock_quantity: updateQuantity
-                        },{
+                        }, {
                             item_id: updateItem
-                        }], 
-                        function(error, result) {
-                            if(error) throw error;
+                        }],
+                        function (error, result) {
+                            if (error) throw error;
                         });
                     console.log("\nThe item has been succesfully added!".red);
                     managerOptions();
                 }
-                else{
+                else {
                     console.log("\nThe item has NOT been added!".red);
                     managerOptions();
                 }
             });
         });
-            
+
     });
 }
 
-function addNewProduct(){
+function addNewProduct() {
     inquirer.prompt([{
         name: "name",
         type: "input",
@@ -361,7 +361,7 @@ function addNewProduct(){
             }
             return false
         }
-    }]).then(function(answer) {
+    }]).then(function (answer) {
         var table4 = new Table({
             head: ["Item ID", "Product Name", "Description", "Department", "$ Price", "Qty to Add"],
             colWidths: [9, 30, 75, 12, 8, 10]
@@ -376,22 +376,22 @@ function addNewProduct(){
             type: "confirm",
             message: "Please confirm the information for the NEW product that you would like to add!".red
         }).then(function (toAdd) {
-            if (toAdd.confirm){
-                connection.query("INSERT INTO products SET ?", 
+            if (toAdd.confirm) {
+                connection.query("INSERT INTO products SET ?",
                     {
                         product_name: answer.name,
                         product_description: answer.description,
                         department_name: answer.department,
                         sales_price: answer.price,
                         stock_quantity: answer.quantityToAdd
-                    }, 
-                    function(error, result) {
-                        if(error) throw error;
+                    },
+                    function (error, result) {
+                        if (error) throw error;
                     });
                 console.log("\nThe NEW product has been succesfully added to the inventory!".red);
                 managerOptions();
             }
-            else{
+            else {
                 console.log("\nThe new product has NOT been added!".red);
                 managerOptions();
             }
@@ -399,7 +399,7 @@ function addNewProduct(){
     });
 }
 
-function deleteProduct(){
+function deleteProduct() {
     inquirer.prompt({
         name: "deleteItem",
         type: "input",
@@ -412,11 +412,11 @@ function deleteProduct(){
         }
     }).then(function (answer) {
         var query = "SELECT * FROM products WHERE ?";
-        connection.query(query, {item_id: answer.deleteItem}, function (err, res) {
+        connection.query(query, { item_id: answer.deleteItem }, function (err, res) {
             if (err) throw err;
             var msg = "You are requesting to delete " + res[0].product_name + " completely from the inventory!";
             console.log(msg.red);
-        
+
             var table5 = new Table({
                 head: ["Item ID", "Product Name", "Description", "Department", "$ Price", "Stock Qty"],
                 colWidths: [9, 30, 75, 12, 8, 10]
@@ -431,31 +431,31 @@ function deleteProduct(){
                 type: "confirm",
                 message: "Please confirm the request to DELETE the product entirely from the inventory!".red
             }).then(function (answer2) {
-                if (answer2.confirm){
-                    connection.query("DELETE FROM products WHERE ?", 
+                if (answer2.confirm) {
+                    connection.query("DELETE FROM products WHERE ?",
                         {
                             item_id: res[0].item_id,
-                        }, 
-                        function(error, result) {
-                            if(error) throw error;
+                        },
+                        function (error, result) {
+                            if (error) throw error;
                         });
                     console.log("\nThe product has been succesfully deleted!".red);
                     managerOptions();
                 }
-                else{
+                else {
                     console.log("\nThe product has NOT been deleted!".red);
                     managerOptions();
                 }
             });
         });
-            
+
     });
 }
 
 // ---------End of Manager Codes--------
 // ---------Start of Supervisor Codes-------
 
-function supervisorGreeting(){
+function supervisorGreeting() {
     figlet("Bamazon Supervisor App", function (err, data) {
         if (err) {
             console.log('Something went wrong...');
@@ -467,69 +467,78 @@ function supervisorGreeting(){
     setTimeout(supervisorOptions, 1000 * 0.1);
 };
 
-function supervisorOptions(){
+function supervisorOptions() {
     inquirer.prompt({
         name: "options",
         type: "rawlist",
         message: "Please select an option!",
-        choices: 
-        ["View Product Sales by Department", "View Product Inventory by Department", "Create New Department", "Delete Department", "Exit to Main Menu"]
+        choices:
+            ["View Product Sales by Department", "View Product Inventory by Department", "Create New Department", "Delete Department", "Exit to Main Menu"]
     }).then(function (answer) {
-        switch (answer.options){
+        switch (answer.options) {
             case "View Product Sales by Department":
-            console.log("\nView Products Sales by Department".red);
-            displayDepartmentSales();
-            setTimeout(supervisorOptions, 1000 * 0.1);
-            break;
+                console.log("\nView Products Sales by Department".red);
+                displayDepartmentSales();
+                setTimeout(supervisorOptions, 1000 * 0.1);
+                break;
 
             case "View Product Inventory by Department":
-            console.log("\nView Product Inventory by Department".red);
-            displayInventory();
-            setTimeout(managerOptions, 1000 * 0.1);
-            break;
+                console.log("\nView Product Inventory by Department".red);
+                displayInventory();
+                setTimeout(managerOptions, 1000 * 0.1);
+                break;
 
             case "Create New Department":
-            console.log("\nCreate NEW Department".red);
-            createDeparment();
-            setTimeout(supervisorOptions, 1000 * 0.1);
-            break;
+                console.log("\nCreate NEW Department".red);
+                createDeparment();
+                setTimeout(supervisorOptions, 1000 * 0.1);
+                break;
 
             case "Delete Department":
-            console.log("\nDELETE Department".red);
-            deleteDepartment();
-            setTimeout(supervisorOptions, 1000 * 0.1);
-            break;
+                console.log("\nDELETE Department".red);
+                deleteDepartment();
+                setTimeout(supervisorOptions, 1000 * 0.1);
+                break;
 
             case "Exit to Main Menu":
-            console.log("\nExiting to Main Menu, Goodbye Supervisor!".red);
-            identifyRole();
-            break;
+                console.log("\nExiting to Main Menu, Goodbye Supervisor!".red);
+                identifyRole();
+                break;
         }
     });
 }
 
 function displayDepartmentSales() {
     // connection.query("SELECT * FROM products INNER JOIN departments ON (products.department_name = departments.department_name) ORDER BY departments.department_id", function (err, res) {
-    var query = "SELECT products.department_name, COUNT(product_sales) AS totalDeptProdSales FROM products INNER JOIN departments ON (products.department_name = departments.department_name) GROUP BY department_name";
-    // var query = "SELECT departments.department_id, products.department_name, departments.over_head_costs, COUNT(product_sales) AS totalDeptProdSales FROM products INNER JOIN departments ON (products.department_name = departments.department_name) GROUP BY department_name";
-    connection.query(query, function (err, res) {
-        if (err) throw err;
-        console.log(res);
-        // var table6 = new Table({
-        //     head: ["Department ID", "Department Name", "$ Over Head Costs", "$ Product Sales", "$ Total Profit"],
-        //     // head: ["Department ID", "Department Name", "$ Over Head Costs", "$ Product Sales"],
-        //     colWidths: [25, 40, 20, 20, 20]
-        // });
-        // for(var i = 0; i < res.length; i++) {
-        // if(res[i].product_sales === null){
-        //     res[i].product_sales = 0;
-        // }
-        // var totalDeptProfit = (parseInt(res[i].over_head_costs) + parseInt(res[i].product_sales));
-        //     table6.push(
-        //         [res[i].department_id, res[i].department_name, res[i].over_head_costs, res[i].product_sales, totalDeptProfit]
-        //         // [res[i].department_id, res[i].department_name, res[i].over_head_costs, res[i].product_sales]
-        //     );
-        // };
-        // console.log(table6.toString());
-    });
+        // var query = "SELECT products.department_name, COUNT(product_sales) AS totalDeptProdSales FROM products INNER JOIN departments ON (products.department_name = departments.department_name) GROUP BY department_name";
+        // var query = "SELECT products.department_name, SUM(product_sales) AS totalDeptProdSales FROM products INNER JOIN departments ON (products.department_name = departments.department_name) GROUP BY department_name";
+        // var query = "SELECT products.department_name, SUM(product_sales) AS totalDeptProdSales FROM products LEFT JOIN departments ON (products.department_name = departments.department_name) GROUP BY department_id, department_name, over_head_costs";
+        // var query = "SELECT products.department_name, SUM(product_sales) AS totalDeptProdSales FROM products INNER JOIN departments ON (departments.department_name = products.department_name) GROUP BY department_name";
+        // var query = "SELECT * FROM departments INNER JOIN (SELECT department_name, SUM(product_sales) AS totalDeptProdSales FROM products GROUP BY department_name) ON departments.department_name = products.department_name"
+        var query = "SELECT * FROM departments INNER JOIN (SELECT department_name, SUM(product_sales) AS totalDeptProdSales FROM products GROUP BY department_name) AS tableProd ON departments.department_name = tableProd.department_name"
+        
+        connection.query(query, function (err, res) {
+            if (err) throw err;
+            // console.log(res);
+            // console.log(res[0].department_name);
+            // console.log(res[0].department_id);
+            if (res[0].totalDeptProdSales === null) {
+                        res[0].totalDeptProdSales = 0;
+                    }
+            var table6 = new Table({
+                head: ["Department ID", "Department Name", "$ Over Head Costs", "$ Product Sales", "$ Total Profit"],
+                colWidths: [20, 20, 20, 20, 20]
+            });
+            for (var i = 0; i < res.length; i++) {
+                if (res[i].totalDeptProdSales === null) {
+                    res[i].totalDeptProdSales = 0;
+                }
+                var totalDeptProfit = (parseInt(res[i].totalDeptProdSales - parseInt(res[i].over_head_costs)));
+                table6.push(
+                    [res[i].department_id, res[i].department_name, res[i].over_head_costs, res[i].totalDeptProdSales, totalDeptProfit]
+                );
+            };
+            console.log(table6.toString());
+        });
+    // })
 }
