@@ -151,6 +151,7 @@ function placeOrder() {
                 console.log("We have enough in stock!".rainbow);
                 var updateQuantity = res[0].stock_quantity - desiredItem.quantityToBuy;
                 var orderTotal = res[0].sales_price * desiredItem.quantityToBuy;
+                var newProductSales = res[0].product_sales + orderTotal;
                 // console.log(updateQuantity);
                 // console.log(orderTotal);
 
@@ -167,7 +168,8 @@ function placeOrder() {
                 console.log(orderPlaced.green);
                 connection.query("UPDATE products SET ? WHERE ?",
                     [{
-                        stock_quantity: updateQuantity
+                        stock_quantity: updateQuantity,
+                        product_sales: newProductSales
                     }, {
                         item_id: desiredItem.itemToBuy
                     }],
@@ -509,36 +511,26 @@ function supervisorOptions() {
 }
 
 function displayDepartmentSales() {
-    // connection.query("SELECT * FROM products INNER JOIN departments ON (products.department_name = departments.department_name) ORDER BY departments.department_id", function (err, res) {
-        // var query = "SELECT products.department_name, COUNT(product_sales) AS totalDeptProdSales FROM products INNER JOIN departments ON (products.department_name = departments.department_name) GROUP BY department_name";
-        // var query = "SELECT products.department_name, SUM(product_sales) AS totalDeptProdSales FROM products INNER JOIN departments ON (products.department_name = departments.department_name) GROUP BY department_name";
-        // var query = "SELECT products.department_name, SUM(product_sales) AS totalDeptProdSales FROM products LEFT JOIN departments ON (products.department_name = departments.department_name) GROUP BY department_id, department_name, over_head_costs";
-        // var query = "SELECT products.department_name, SUM(product_sales) AS totalDeptProdSales FROM products INNER JOIN departments ON (departments.department_name = products.department_name) GROUP BY department_name";
-        // var query = "SELECT * FROM departments INNER JOIN (SELECT department_name, SUM(product_sales) AS totalDeptProdSales FROM products GROUP BY department_name) ON departments.department_name = products.department_name"
-        var query = "SELECT * FROM departments INNER JOIN (SELECT department_name, SUM(product_sales) AS totalDeptProdSales FROM products GROUP BY department_name) AS tableProd ON departments.department_name = tableProd.department_name"
-        
-        connection.query(query, function (err, res) {
-            if (err) throw err;
-            // console.log(res);
-            // console.log(res[0].department_name);
-            // console.log(res[0].department_id);
-            if (res[0].totalDeptProdSales === null) {
-                        res[0].totalDeptProdSales = 0;
-                    }
-            var table6 = new Table({
-                head: ["Department ID", "Department Name", "$ Over Head Costs", "$ Product Sales", "$ Total Profit"],
-                colWidths: [20, 20, 20, 20, 20]
-            });
-            for (var i = 0; i < res.length; i++) {
-                if (res[i].totalDeptProdSales === null) {
-                    res[i].totalDeptProdSales = 0;
-                }
-                var totalDeptProfit = (parseInt(res[i].totalDeptProdSales - parseInt(res[i].over_head_costs)));
-                table6.push(
-                    [res[i].department_id, res[i].department_name, res[i].over_head_costs, res[i].totalDeptProdSales, totalDeptProfit]
-                );
-            };
-            console.log(table6.toString());
+    var query = "SELECT * FROM departments INNER JOIN (SELECT department_name, SUM(product_sales) AS totalDeptProdSales FROM products GROUP BY department_name) AS tableProd ON departments.department_name = tableProd.department_name";
+    connection.query(query, function (err, res) {
+        if (err) throw err;
+        // console.log(res);
+        var table6 = new Table({
+            head: ["Department ID", "Department Name", "$ Over Head Costs", "$ Product Sales", "$ Total Profit"],
+            colWidths: [20, 20, 20, 20, 20]
         });
-    // })
+        for (var i = 0; i < res.length; i++) {
+            if (res[i].totalDeptProdSales === null) {
+                res[i].totalDeptProdSales = 0;
+                // console.log(res[i].totalDeptProdSales);
+            }
+            var totalDeptProfit = (parseInt(res[i].totalDeptProdSales - parseInt(res[i].over_head_costs)));
+            table6.push(
+                [res[i].department_id, res[i].department_name, res[i].over_head_costs, res[i].totalDeptProdSales, totalDeptProfit]
+            );
+        };
+        console.log(table6.toString());
+        console.log();
+    });
+
 }
