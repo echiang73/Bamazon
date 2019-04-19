@@ -43,22 +43,22 @@ function identifyRole() {
     }).then(function (answer) {
         switch (answer.userRole) {
             case "Customer":
-                console.log("Hello Customer!");
+                console.log("Hello Customer!".red);
                 askViewInventory();
                 break;
 
             case "Manager":
-                console.log("Hello Manager!");
+                console.log("Hello Manager!".red);
                 managerGreeting();
                 break;
 
             case "Supervisor":
-                console.log("Hello Supervisor!");
+                console.log("Hello Supervisor!".red);
                 supervisorGreeting();
                 break;
 
             case "EXIT":
-                console.log("Thank you for visiting, come back again!");
+                console.log("Thank you for visiting, come back again!".rainbow);
                 connection.end();
                 break;
         }
@@ -148,7 +148,7 @@ function placeOrder() {
             // console.log(desiredItem.quantityToBuy);
             // console.log(res[0].stock_quantity);
             if (desiredItem.quantityToBuy <= res[0].stock_quantity) {
-                console.log("We have enough in stock!".rainbow);
+                console.log("We have enough in stock!".green);
                 var updateQuantity = res[0].stock_quantity - desiredItem.quantityToBuy;
                 var orderTotal = res[0].sales_price * desiredItem.quantityToBuy;
                 var newProductSales = res[0].product_sales + orderTotal;
@@ -177,10 +177,12 @@ function placeOrder() {
                         if (error) throw error;
                     });
                 askViewInventory();
+                return;
             }
             else {
                 console.log("Sorry, insufficient quantity in stock.  Please enter a lower quantity to purchase.".red);
                 placeOrder();
+                return;
             }
         })
     });
@@ -211,29 +213,29 @@ function managerOptions() {
     }).then(function (answer) {
         switch (answer.options) {
             case "View Products for Sale":
-                console.log("\nView Products Currently for Sale".red);
+                console.log("\nOK, let's view all the Products Currently for Sale".red);
                 displayInventory();
                 setTimeout(managerOptions, 1000 * 0.1);
                 break;
 
             case "View Low Inventory":
-                console.log("\nTable of Low Inventory Products!".red);
+                console.log("\nOK, here is the Table of Low Inventory Products!".red);
                 displayLowInventory();
                 setTimeout(managerOptions, 1000 * 0.1);
                 break;
 
             case "Add to Inventory":
-                console.log("\nTo ADD to Current Inventory!".red);
+                console.log("\nOK, let's ADD to Current Inventory!".red);
                 addToInventory();
                 break;
 
             case "Add New Product":
-                console.log("\nTo ADD New Products!".red);
+                console.log("\nOK, let's ADD a NEWProduct!".red);
                 addNewProduct();
                 break;
 
             case "Delete Product":
-                console.log("\nTo DELETE Products!".red);
+                console.log("\nOK, let's DELETE a Product!".red);
                 deleteProduct();
                 break;
 
@@ -318,10 +320,12 @@ function addToInventory() {
                         });
                     console.log("\nThe item has been succesfully added!".red);
                     managerOptions();
+                    return;
                 }
                 else {
                     console.log("\nThe item has NOT been added!".red);
                     managerOptions();
+                    return;
                 }
             });
         });
@@ -330,73 +334,85 @@ function addToInventory() {
 }
 
 function addNewProduct() {
-    inquirer.prompt([{
-        name: "name",
-        type: "input",
-        message: "Please enter the NAME of the NEW product that you would like to add!",
-    }, {
-        name: "description",
-        type: "input",
-        message: "Please enter a DESCRIPTION of the new product!",
-    }, {
-        name: "department",
-        type: "rawlist",
-        message: "Please select the DEPARTMENT that the new product belows to!",
-        choices: ["Books", "Cosmetics", "Food", "Toys"]
-    }, {
-        name: "price",
-        type: "input",
-        message: "What is the retail PRICE for the new product?",
-        validate: function (value) {
-            if (isNaN(value) === false) {
-                return true;
-            }
-            return false
+    connection.query("SELECT department_name FROM departments", function (error, result) {
+        if (error) throw error;
+        // console.log(result);
+        var resultArray = [];
+        for (var i = 0; i < result.length; i++) {
+            resultArray.push(result[i].department_name);
         }
-    }, {
-        name: "quantityToAdd",
-        type: "input",
-        message: "What QUANTITY would you like to stock in the inventory for the new product?",
-        validate: function (value) {
-            if (isNaN(value) === false) {
-                return true;
-            }
-            return false
-        }
-    }]).then(function (answer) {
-        var table4 = new Table({
-            head: ["Item ID", "Product Name", "Description", "Department", "$ Price", "Qty to Add"],
-            colWidths: [9, 30, 75, 12, 8, 10]
-        });
-        table4.push(
-            ["TBD", answer.name, answer.description, answer.department, answer.price, answer.quantityToAdd]
-        );
-        console.log(table4.toString());
+        // console.log(resultArray);
 
-        inquirer.prompt({
-            name: "confirm",
-            type: "confirm",
-            message: "Please confirm the information for the NEW product that you would like to add!".red
-        }).then(function (toAdd) {
-            if (toAdd.confirm) {
-                connection.query("INSERT INTO products SET ?",
-                    {
-                        product_name: answer.name,
-                        product_description: answer.description,
-                        department_name: answer.department,
-                        sales_price: answer.price,
-                        stock_quantity: answer.quantityToAdd
-                    },
-                    function (error, result) {
-                        if (error) throw error;
-                    });
-                console.log("\nThe NEW product has been succesfully added to the inventory!".red);
-                managerOptions();
+        inquirer.prompt([{
+            name: "name",
+            type: "input",
+            message: "Please enter the NAME of the NEW product that you would like to add!".red,
+        }, {
+            name: "description",
+            type: "input",
+            message: "Please enter a DESCRIPTION of the new product!".red,
+        }, {
+            name: "department",
+            type: "rawlist",
+            message: "Please select the DEPARTMENT that the new product belows to!",
+            choices: resultArray // In order to accommodate for any newly created Department, we would need to make a connection query and group all department_name as a variable of array and reference this a the choices.
+        }, {
+            name: "price",
+            type: "input",
+            message: "What is the retail PRICE for the new product?",
+            validate: function (value) {
+                if (isNaN(value) === false) {
+                    return true;
+                }
+                return false
             }
-            else {
-                console.log("\nThe new product has NOT been added!".red);
-                managerOptions();
+        }, {
+            name: "quantityToAdd",
+            type: "input",
+            message: "What QUANTITY would you like to stock in the inventory for the new product?",
+            validate: function (value) {
+                if (isNaN(value) === false) {
+                    return true;
+                }
+                return false
             }
+        }]).then(function (answer) {
+            var table4 = new Table({
+                head: ["Item ID", "Product Name", "Description", "Department", "$ Price", "Qty to Add"],
+                colWidths: [9, 30, 75, 12, 8, 10]
+            });
+            table4.push(
+                ["TBD", answer.name, answer.description, answer.department, answer.price, answer.quantityToAdd]
+            );
+            console.log(table4.toString());
+
+            inquirer.prompt({
+                name: "confirm",
+                type: "confirm",
+                message: "Please confirm the information for the NEW product that you would like to add!".red
+            }).then(function (toAdd) {
+                if (toAdd.confirm) {
+                    connection.query("INSERT INTO products SET ?",
+                        {
+                            product_name: answer.name,
+                            product_description: answer.description,
+                            department_name: answer.department,
+                            sales_price: answer.price,
+                            stock_quantity: answer.quantityToAdd
+                        },
+                        function (error, result) {
+                            if (error) throw error;
+                        });
+                    console.log("\nThe NEW product has been succesfully added to the inventory!".red);
+                    managerOptions();
+                    return;
+                }
+                else {
+                    console.log("\nThe new product has NOT been added!".red);
+                    managerOptions();
+                    return;
+                }
+            });
         });
     });
 }
@@ -443,10 +459,12 @@ function deleteProduct() {
                         });
                     console.log("\nThe product has been succesfully deleted!".red);
                     managerOptions();
+                    return;
                 }
                 else {
                     console.log("\nThe product has NOT been deleted!".red);
                     managerOptions();
+                    return;
                 }
             });
         });
@@ -475,31 +493,28 @@ function supervisorOptions() {
         type: "rawlist",
         message: "Please select an option!",
         choices:
-            ["View Product Sales by Department", "View Product Inventory by Department", "Create New Department", "Delete Department", "Exit to Main Menu"]
+            ["View Product Sales by Department", "Create New Department", "Delete Department", "View Existing Departments and or Change Over Head Costs", "Exit to Main Menu"]
     }).then(function (answer) {
         switch (answer.options) {
             case "View Product Sales by Department":
-                console.log("\nView Products Sales by Department".red);
+                console.log("\nOK, let's view PRODUCT SALES by Department".red);
                 displayDepartmentSales();
                 setTimeout(supervisorOptions, 1000 * 0.1);
                 break;
 
-            case "View Product Inventory by Department":
-                console.log("\nView Product Inventory by Department".red);
-                displayInventory();
-                setTimeout(managerOptions, 1000 * 0.1);
-                break;
-
             case "Create New Department":
-                console.log("\nCreate NEW Department".red);
-                createDeparment();
-                setTimeout(supervisorOptions, 1000 * 0.1);
+                console.log("\nOK, let's create a NEW Department".red);
+                createDepartment();
                 break;
 
             case "Delete Department":
-                console.log("\nDELETE Department".red);
+                console.log("\nOK, let's DELETE a Department".red);
                 deleteDepartment();
-                setTimeout(supervisorOptions, 1000 * 0.1);
+                break;
+
+            case "View Existing Departments and or Change Over Head Costs":
+                console.log("\nOK, let's view the Departments and the Over Head Costs".red);
+                viewDeptOverHeadCosts();
                 break;
 
             case "Exit to Main Menu":
@@ -511,7 +526,7 @@ function supervisorOptions() {
 }
 
 function displayDepartmentSales() {
-    var query = "SELECT * FROM departments INNER JOIN (SELECT department_name, SUM(product_sales) AS totalDeptProdSales FROM products GROUP BY department_name) AS tableProd ON departments.department_name = tableProd.department_name";
+    var query = "SELECT * FROM departments JOIN (SELECT department_name, SUM(product_sales) AS totalDeptProdSales FROM products GROUP BY department_name) AS tableProd ON departments.department_name = tableProd.department_name";
     connection.query(query, function (err, res) {
         if (err) throw err;
         // console.log(res);
@@ -531,6 +546,129 @@ function displayDepartmentSales() {
         };
         console.log(table6.toString());
         console.log();
+    });
+}
+
+function createDepartment() {
+    inquirer.prompt([{
+        name: "department_name",
+        type: "input",
+        message: "Please enter the NAME of the NEW department that you would like to CREATE!".red,
+    }, {
+        name: "over_head_costs",
+        type: "input",
+        message: "Please enter the starting Over Head Cost for the New Department!".red,
+        validate: function (value) {
+            if (isNaN(value) === false) {
+                return true;
+            }
+            return false
+        }
+    }]).then(function (answer) {
+        var msg = "You have entered the creation of the " + answer.department_name + " department with a starting budget of $" + answer.over_head_costs + "!";
+        console.log(msg.red);
+        inquirer.prompt({
+            name: "confirm",
+            type: "confirm",
+            message: "Please confirm that you would like to add the information for the NEW DEPARTMENT!".red
+        }).then(function (answer2) {
+            if (answer2.confirm) {
+                connection.query("INSERT INTO departments SET ?",
+                    {
+                        department_name: answer.department_name,
+                        over_head_costs: answer.over_head_costs
+                    },
+                    function (error, result) {
+                        if (error) throw error;
+                    });
+                console.log("\nThe NEW department has been succesfully created!".red);
+                supervisorOptions();
+                return;
+            }
+            // if (answer2.confirm) {
+            //     connection.query("INSERT INTO products SET ?",
+            //         {
+            //             department_name: answer.department_name,
+            //             product_name: "placeholder",
+            //             product_description: "generic",
+            //             sales_price: 0,
+            //             product_sales: ""
+            //         },
+            //         function (error, result) {
+            //             if (error) throw error;
+            //         });
+            //     console.log("\nThe NEW department has been succesfully created!".red);
+            //     supervisorOptions();
+            //     return;
+            // }
+            else {
+                console.log("\nThe new department has NOT been created!".red);
+                supervisorOptions();
+                return;
+            }
+        });
+    });
+}
+
+function deleteDepartment() {
+    connection.query("SELECT department_name FROM departments", function (error, result) {
+        if (error) throw error;
+        // console.log(result);
+        var resultArray = [];
+        for (var i = 0; i < result.length; i++) {
+            resultArray.push(result[i].department_name);
+        }
+        console.log(resultArray);
+        inquirer.prompt({
+            name: "department_name",
+            type: "rawlist",
+            message: "Please enter the NAME of the department that you would like to DELETE!".red,
+            choices: resultArray
+        }).then(function (answer) {
+            console.log(answer.department_name);
+            inquirer.prompt({
+                name: "confirm",
+                type: "confirm",
+                message: "Please confirm that you would like to DELETE that entire DEPARTMENT!".red
+            }).then(function (answer2) {
+                if (answer2.confirm) {
+                    connection.query("DELETE FROM departments WHERE ?",
+                        {
+                            department_name: answer.department_name
+                        },
+                        function (error, result) {
+                            if (error) throw error;
+                        });
+                    console.log("\nThe department has been succesfully deleted!".red);
+                    supervisorOptions();
+                    return;
+                }
+                else {
+                    console.log("\nThe department has NOT been deleted!".red);
+                    supervisorOptions();
+                    return;
+                }
+            });
+        });
+    });
+}
+
+function viewDeptOverHeadCosts() {
+    connection.query("SELECT * FROM departments", function (err, res) {
+        if (err) throw err;
+        // console.log(res);
+        var table7 = new Table({
+            head: ["Department ID", "Department Name", "Over Head Costs"],
+            colWidths: [20, 20, 20]
+        });
+        for (var i = 0; i < res.length; i++) {
+            table7.push(
+                [res[i].department_id, res[i].department_name, res[i].over_head_costs]
+            );
+        };
+        console.log(table7.toString());
+        supervisorOptions();
+        return;
     });
 
 }
