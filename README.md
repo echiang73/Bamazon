@@ -3,7 +3,7 @@ Command Line Interface App: Amazon-like Storefront using Node.js and MySQL
 
 
 ## Overview
-This application implements a CLI based Storefront for the retail company "Bamazon".  The app has 3 interfaces: one for the **customer**, one for the **managers**, and one for the **supervisor**.  The app will allow: 1) customers to place orders; 2) the managers to add new products or update inventory; 3) the supervisor to view sales and profit.  Beyond the proposed levels of challenges, several more features are added to make the app more functional for real-world use as described below. The app uses Node.js and npm inquirer package to execute prompt-directed commands with the backend MySQL database of the product inventory to retrieve and display information.
+This application implements a CLI based Storefront for the retail company "Bamazon".  The app has 3 interfaces: one for the **customer**, one for the **manager**, and one for the **supervisor**.  The app will allow: 1) a customer to place orders; 2) a manager to add new products or update inventory; 3) a supervisor to view sales and profit.  Beyond the proposed levels of challenges, several more features are added to make the app more functional for real-world use as described below. The app uses Node.js and npm inquirer package to execute prompt-directed commands with the backend MySQL database of the product inventory to retrieve and display information.
 
 ## How to Run Bamazon:
 
