@@ -60,6 +60,18 @@ This application implements a CLI based Storefront for the retail company "Bamaz
 https://github.com/echiang73/Bamazon
 
 
-## Here is the preview of the node application:
+## Here are the previews of the node application:
 
-![](nodepreview.gif "gif")
+Customer Interface:
+
+![](nodepreview1.gif "gif")
+
+
+Manager Interface:
+
+![](nodepreview2.gif "gif")
+
+
+Supervisor Interface:
+
+![](nodepreview3.gif "gif")
