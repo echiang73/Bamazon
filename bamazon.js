@@ -585,22 +585,6 @@ function createDepartment() {
                 supervisorOptions();
                 return;
             }
-            // if (answer2.confirm) {
-            //     connection.query("INSERT INTO products SET ?",
-            //         {
-            //             department_name: answer.department_name,
-            //             product_name: "placeholder",
-            //             product_description: "generic",
-            //             sales_price: 0,
-            //             product_sales: ""
-            //         },
-            //         function (error, result) {
-            //             if (error) throw error;
-            //         });
-            //     console.log("\nThe NEW department has been succesfully created!".red);
-            //     supervisorOptions();
-            //     return;
-            // }
             else {
                 console.log("\nThe new department has NOT been created!".red);
                 supervisorOptions();
@@ -654,21 +638,76 @@ function deleteDepartment() {
 }
 
 function viewDeptOverHeadCosts() {
-    connection.query("SELECT * FROM departments", function (err, res) {
-        if (err) throw err;
-        // console.log(res);
+    connection.query("SELECT * FROM departments", function (error, result) {
+        if (error) throw error;
+        // console.log(result);
         var table7 = new Table({
             head: ["Department ID", "Department Name", "Over Head Costs"],
             colWidths: [20, 20, 20]
         });
-        for (var i = 0; i < res.length; i++) {
+        for (var i = 0; i < result.length; i++) {
             table7.push(
-                [res[i].department_id, res[i].department_name, res[i].over_head_costs]
+                [result[i].department_id, result[i].department_name, result[i].over_head_costs]
             );
         };
         console.log(table7.toString());
-        supervisorOptions();
-        return;
-    });
 
+        var resultArray = [];
+        for (var x = 0; x < result.length; x++) {
+            resultArray.push(result[x].department_name);
+        }
+        // console.log(resultArray);
+
+        inquirer.prompt([{
+            name: "department",
+            type: "rawlist",
+            message: "Please select the DEPARTMENT that you would like to change the over head cost!",
+            choices: resultArray // In order to accommodate for any newly created Department, we would need to make a connection query and group all department_name as a variable of array and reference this a the choices.
+        }, {
+            name: "overheadcost",
+            type: "input",
+            message: "What ($) amount would you like to change the OVER HEAD COST to?",
+            validate: function (value) {
+                if (isNaN(value) === false) {
+                    return true;
+                }
+                return false
+            }
+        }]).then(function (answer) {
+            var table8 = new Table({
+                head: ["Department ID", "Department Name", "Over Head Costs"],
+            colWidths: [20, 20, 20]
+            });
+            table8.push(
+                ["N/A", answer.department, answer.overheadcost] // is this correct with i instead of x??????
+            );
+            console.log(table8.toString());
+
+            inquirer.prompt({
+                name: "confirm",
+                type: "confirm",
+                message: "Please confirm that you would like to revise the information for the department over head cost!".red
+            }).then(function (toAdd) {
+                if (toAdd.confirm) {
+                    connection.query("UPDATE departments SET ? WHERE ?",
+                        [{
+                            over_head_costs: answer.overheadcost
+                        }, {
+                            department_name: answer.department
+                        }],
+                        function (error, result) {
+                            if (error) throw error;
+                        });
+                    console.log("\nThe updated overhead cost has been succesfully added to the specified department!".red);
+                    supervisorOptions();
+                    return;
+                }
+                else {
+                    console.log("\nThe updated overhead cost has NOT been added!".red);
+                    supervisorOptions();
+                    return;
+                }
+            });
+        });
+    });
 }
