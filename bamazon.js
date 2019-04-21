@@ -89,7 +89,7 @@ function displayInventory() {
         // console.log(res);
         var table = new Table({
             head: ["Item ID", "Product Name", "Description", "Department", "$ Price", "Stock Qty"],
-            colWidths: [9, 30, 75, 12, 8, 10]
+            colWidths: [9, 30, 70, 12, 12, 12]
         });
         for (var i = 0; i < res.length; i++) {
             table.push(
@@ -157,7 +157,7 @@ function placeOrder() {
 
                 var table2 = new Table({
                     head: ["Product Purchased", "Description", "Quantity Ordered", "$/Unit", "$ Total Cost"],
-                    colWidths: [30, 75, 18, 12, 14]
+                    colWidths: [30, 70, 18, 14, 14]
                 });
                 table2.push(
                     [res[0].product_name, res[0].product_description, desiredItem.quantityToBuy, res[0].sales_price, orderTotal]
@@ -230,7 +230,7 @@ function managerOptions() {
                 break;
 
             case "Add New Product":
-                console.log("\nOK, let's ADD a NEWProduct!".red);
+                console.log("\nOK, let's ADD a NEW Product!".red);
                 addNewProduct();
                 break;
 
@@ -253,7 +253,7 @@ function displayLowInventory() {
         // console.log(res);
         var table = new Table({
             head: ["Item ID", "Product Name", "Description", "Department", "$ Price", "Stock Qty"],
-            colWidths: [9, 30, 75, 12, 8, 10]
+            colWidths: [9, 30, 70, 12, 12, 12]
         });
         for (var i = 0; i < res.length; i++) {
             table.push(
@@ -379,7 +379,7 @@ function addNewProduct() {
         }]).then(function (answer) {
             var table4 = new Table({
                 head: ["Item ID", "Product Name", "Description", "Department", "$ Price", "Qty to Add"],
-                colWidths: [9, 30, 75, 12, 8, 10]
+                colWidths: [9, 30, 70, 12, 12, 12]
             });
             table4.push(
                 ["TBD", answer.name, answer.description, answer.department, answer.price, answer.quantityToAdd]
@@ -602,7 +602,7 @@ function deleteDepartment() {
         for (var i = 0; i < result.length; i++) {
             resultArray.push(result[i].department_name);
         }
-        console.log(resultArray);
+        // console.log(resultArray);
         inquirer.prompt({
             name: "department_name",
             type: "rawlist",
@@ -679,7 +679,7 @@ function viewDeptOverHeadCosts() {
             colWidths: [20, 20, 20]
             });
             table8.push(
-                ["N/A", answer.department, answer.overheadcost] // is this correct with i instead of x??????
+                ["N/A", answer.department, answer.overheadcost] // is this correct with i instead of x?????? 
             );
             console.log(table8.toString());
 
