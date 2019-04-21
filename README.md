@@ -9,16 +9,15 @@ This application implements a CLI based Storefront for the retail company "Bamaz
 
 1. Clone down repository.
 2. Navigate to the root of your project and run `npm install` to install the required versions of third party npm packages as instructed in the `package.json` file.
-3. Note that this app will only work if you provide the MySQL connection user name and password in the `keys.js`.
-4. Run command `node bamazon.js`.  Note that the original intent to use 3 js files `bamazonCustomer.js`, `bamazonManager.js`, `bamazonSupervisor.js` have all been merged into a single js file with shared codes.
+3. Note that this app will only work if you provide the MySQL connection password in the `keys.js` file or password on line 14 of `bamazon.js`.
+4. Create the database in MySQL by opening and executing the schema.sql file.  Once the products table is created, import the product information from the products.csv file.  Once the departments table is created, execute the seeds.sql to insert the department data into the table.
+5. Run command `node bamazon.js`.  Note that the original intent to use 3 js files `bamazonCustomer.js`, `bamazonManager.js`, `bamazonSupervisor.js` have all been merged into a single js file with shared codes.
 
 
 ## Detail Instructions:
 1. Option 1 for Customer Interface: :credit_card: :package: :shipit:
 
-   The **Customer** interface allows the user/customer to view the current inventory, specifically : product name, description, price, and stock quantity. The customer is then able to purchase an item and the desired quantity. If the selected quantity is currently in stock, the customer's order is fulfilled, displaying the total purchase price and updating the store database. If the desired quantity is not available, the customer is prompted to modify the order.
-
-   Just for fun, purchase all of the following pregnancy prediction products: "lotion, vitamin, scent-free soap, and hand-sanitizer" and receive a promotional discount for diapers and upcoming pregnancy/baby products! :tada: :baby: :baby_bottle:
+   The **Customer** interface allows the user/customer to view the current inventory, specifically : product name, description, price, and stock quantity. The customer is then able to purchase an item and the desired quantity. If the selected quantity is currently in stock, the customer's order is fulfilled, displaying the total purchase price and updating the store database. If the desired quantity is not available, the customer is prompted to modify the order
 
 2. Option 2 for Manager Interface: :spiral_notepad: :writing_hand:
      
